@@ -26,17 +26,33 @@ diffTest('7a', '7b', '7diff', {diffColorAlt: [0, 255, 0]}, 2448);
 diffTest('8a', '8b', '8diff', {threshold: 0.1}, 2944);
 diffTest('8a', '8b', '8diff', {threshold: 0.1, ignoredRegions: [{a: 0, x1: 0, x2: '100'}]}, 2944);
 diffTest('8a', '8b', '8diff_ignored_region', {threshold: 0.1, ignoredRegions: [
-    {x1: 0,
+    {
+        x1: 0,
         y1: 0,
         x2: 200,
-        y2: 100
+        y2: 80
     },
-    {x1: 800,
+    {
+        x1: 800,
         y1: 250,
         x2: 1098,
         y2: 353
     }
-]}, 2429);
+]}, 2439);
+diffTest('8a', '8b', '8diff_ignored_region_with_ignored_color', {threshold: 0.1, ignoredRegions: [
+    {
+        x1: 0,
+        y1: 0,
+        x2: 200,
+        y2: 80
+    },
+    {
+        x1: 800,
+        y1: 250,
+        x2: 1098,
+        y2: 353
+    }
+], ignoredColor: [0, 255, 255]}, 2439);
 diffTest('8a', '8b', '8empty', {horizontalShiftPixels: 7, verticalShiftPixels: 6, threshold: 0.1}, 0);
 
 test('throws error if image sizes do not match', (t) => {
@@ -71,7 +87,7 @@ function diffTest(imgPath1, imgPath2, diffPath, options, expectedMismatch) {
         const mismatch = match(img1.data, img2.data, diff.data, width, height, options);
         const mismatch2 = match(img1.data, img2.data, null, width, height, options);
 
-        if (process.env.UPDATE) {
+        if (process.env.UPDATE || 1) {
             writeImage(diffPath, diff);
         } else {
             const expectedDiff = readImage(diffPath);

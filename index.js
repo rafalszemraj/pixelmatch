@@ -13,6 +13,7 @@ const defaultOptions = {
     diffColorAlt: null,     // whether to detect dark on light differences between img1 and img2 and set an alternative color to differentiate between the two
     diffMask: false,        // draw the diff over a transparent background (a mask)
     ignoredRegions: null,   // array of {x1,y1,x2,y2} objects representing image regions to ignore from checking
+    ignoredColor: null,     // color of ignored region
 };
 
 function pixelmatch(img1, img2, output, width, height, options) {
@@ -54,7 +55,14 @@ function pixelmatch(img1, img2, output, width, height, options) {
 
             const pos = (y * width + x) * 4;
             if (isPixelIgnored(x, y, options.ignoredRegions)) {
-                if (output && !options.diffMask) drawGrayPixel(img1, pos, options.alpha, output);
+                if (output && !options.diffMask) {
+
+                    if (options.ignoredColor) {
+                        drawPixel(output, pos, ...options.ignoredColor);
+                    } else {
+                        drawGrayPixel(img1, pos, options.alpha, output);
+                    }
+                }
                 continue;
             }
 

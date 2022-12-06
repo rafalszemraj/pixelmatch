@@ -53,6 +53,8 @@ Implements ideas from the following papers:
 - `diffMask` — Draw the diff over a transparent background (a mask), rather than over the original image. Will not draw anti-aliased pixels (if detected).
 - `ignoredRegions` - array of {x1,y1,x2,y2} objects representing image regions to ignore from 
   checking, default null.
+- `ignoredColor` - color of ignored area on image (by default null, so ignored regions are not 
+  marked)
 
 Compares two images, writes the output diff and returns the number of mismatched pixels.
 
