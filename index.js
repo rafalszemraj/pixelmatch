@@ -11,7 +11,9 @@ const defaultOptions = {
     aaColor: [255, 255, 0], // color of anti-aliased pixels in diff output
     diffColor: [255, 0, 0], // color of different pixels in diff output
     diffColorAlt: null,     // whether to detect dark on light differences between img1 and img2 and set an alternative color to differentiate between the two
-    diffMask: false         // draw the diff over a transparent background (a mask)
+    diffMask: false,        // draw the diff over a transparent background (a mask)
+    ignoredRegions: null,   // array of {x1,y1,x2,y2} objects representing image regions to ignore from checking
+    ignoredColor: null,     // color of ignored region
 };
 
 function pixelmatch(img1, img2, output, width, height, options) {
@@ -52,6 +54,17 @@ function pixelmatch(img1, img2, output, width, height, options) {
         for (let x = 0; x < width; x++) {
 
             const pos = (y * width + x) * 4;
+            if (isPixelIgnored(x, y, options.ignoredRegions)) {
+                if (output && !options.diffMask) {
+
+                    if (options.ignoredColor) {
+                        drawPixel(output, pos, ...options.ignoredColor);
+                    } else {
+                        drawGrayPixel(img1, pos, options.alpha, output);
+                    }
+                }
+                continue;
+            }
 
             // squared YUV distance between colors at this pixel position, negative if the img2 pixel is darker
             let delta = colorDelta(img1, img2, pos, pos);
@@ -260,4 +273,24 @@ function drawGrayPixel(img, i, alpha, output) {
     const b = img[i + 2];
     const val = blend(rgb2y(r, g, b), alpha * img[i + 3] / 255);
     drawPixel(output, i, val, val, val);
+}
+
+function isPixelIgnored(x, y, ignoredRegions) {
+    if (ignoredRegions == null) {
+        return false;
+    }
+    for (const region of ignoredRegions) {
+        if (isPixelInRegion(x, y, region)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function isPixelInRegion(x, y, region) {
+    const {x1, y1, x2, y2} = region;
+    if (isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2)) {
+        return false;
+    }
+    return x1 <= x && x <= x2 && y1 <= y && y <= y2;
 }
