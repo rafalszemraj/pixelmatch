@@ -93,8 +93,8 @@ function diffTest(imgPath1, imgPath2, diffPath, options, expectedMismatch) {
             const expectedDiff = readImage(diffPath);
             t.ok(diff.data.equals(expectedDiff.data), 'diff image');
         }
-        t.equal(mismatch, expectedMismatch, 'number of mismatched pixels');
-        t.equal(mismatch, mismatch2, 'number of mismatched pixels without diff');
+        t.equal(mismatch.length, expectedMismatch, 'number of mismatched pixels');
+        t.equal(mismatch.length, mismatch2.length, 'number of mismatched pixels without diff');
 
         t.end();
     });

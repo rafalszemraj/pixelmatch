@@ -41,13 +41,13 @@ function pixelmatch(img1, img2, output, width, height, options) {
         if (output && !options.diffMask) {
             for (let i = 0; i < len; i++) drawGrayPixel(img1, 4 * i, options.alpha, output);
         }
-        return 0;
+        return [];
     }
 
     // maximum acceptable square distance between two colors;
     // 35215 is the maximum possible value for the YIQ difference metric
     const maxDelta = 35215 * options.threshold * options.threshold;
-    let diff = 0;
+    const diff = [];
 
     // compare each pixel of one image against the other one
     for (let y = 0; y < height; y++) {
@@ -108,7 +108,7 @@ function pixelmatch(img1, img2, output, width, height, options) {
                     if (output) {
                         drawPixel(output, pos, ...(delta < 0 && options.diffColorAlt || options.diffColor));
                     }
-                    diff++;
+                    diff.push({x, y});
                 }
 
             } else if (output) {
