@@ -16,7 +16,7 @@ has **no dependencies**, and works on **raw typed arrays** of image data,
 so it's **blazing fast** and can be used in **any environment** (Node or browsers).
 
 ```js
-const numDiffPixels = pixelmatch(img1, img2, diff, 800, 600, {threshold: 0.1});
+const differingPixels = pixelmatch(img1, img2, diff, 800, 600, {threshold: 0.1});
 ```
 
 Implements ideas from the following papers:
